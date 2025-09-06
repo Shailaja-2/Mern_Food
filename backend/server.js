@@ -12,7 +12,7 @@ import app from "./app.js";
 dotenv.config();
 
 // MongoDB connection
-mongoose.connect(process.env.MONGO_URL, {
+mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })

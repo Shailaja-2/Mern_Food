@@ -1,36 +1,3 @@
-// import express from "express";
-// import dotenv from "dotenv";
-// import cors from "cors";
-// import { errorMiddleware } from "./middlewares/error.js";
-// import reservationRouter from "./routes/reservationRoute.js";
-// import { dbConnection } from "./database/dbConnection.js";
-
-// const app = express();
-// dotenv.config({ path: "./config/config.env" });
-
-// app.use(
-//   cors({
-//     origin: [process.env.FRONTEND_URL],
-//     methods: ["POST"],
-//     credentials: true,
-//   })
-// );
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: true }));
-
-// app.use("/api/v1/reservation", reservationRouter);
-// app.get("/", (req, res, next)=>{return res.status(200).json({
-//   success: true,
-//   message: "HELLO WORLD AGAIN"
-// })})
-
-// dbConnection();
-
-// app.use(errorMiddleware);
-
-// export default app;
-
-
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -38,41 +5,39 @@ import { errorMiddleware } from "./middlewares/error.js";
 import reservationRouter from "./routes/reservationRoute.js";
 import { dbConnection } from "./database/dbConnection.js";
 
-// Initialize Express app
+// Initialize app
 const app = express();
 
-// Load environment variables from config file
+// Load environment variables
 dotenv.config({ path: "./config/config.env" });
 
-// CORS Configuration – allow only POST requests from your frontend
+// Setup CORS before routes
 app.use(cors({
-  origin: process.env.NODE_ENV === "development" 
-    ? "http://localhost:5173" // Local frontend during development
-    : process.env.FRONTEND_URL, // Production frontend URL
-  methods: ["POST"], // Allow only POST requests
-  credentials: true, // Allow cookies if you're using authentication
+  origin: process.env.FRONTEND_URL,  // frontend’s URL from .env
+  methods: ["POST", "OPTIONS"],      // allow POST and OPTIONS requests
+  credentials: true,                 // allow cookies if needed
 }));
 
-// Middleware to parse incoming requests
+// Body parsing middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// API route
+// Routes
 app.use("/api/v1/reservation", reservationRouter);
 
-// Test route to confirm server is running
+// Health check route
 app.get("/", (req, res) => {
-  return res.status(200).json({
+  res.status(200).json({
     success: true,
-    message: "HELLO WORLD AGAIN",
+    message: "Server is running!",
   });
 });
 
-// Connect to MongoDB database
+// Connect to MongoDB
 dbConnection();
 
-// Error-handling middleware
+// Error handling middleware
 app.use(errorMiddleware);
 
-// Export the app
+
 export default app;
